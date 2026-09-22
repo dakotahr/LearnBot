@@ -9,7 +9,7 @@ class config:
     botName = 'beBot33'                  # Nombre oficial del nuevo bot
     ownerName = 'IamDakota'              # Tu nombre de usuario
     roomName = 'Sala de IamDakota'       # Nombre descriptivo para tu sala
-    
+    room = '69a113aed41925285a28e3cd'
     # Coordenadas exactas donde aparecerá el bot al entrar a la sala
     coordinates = {
         'x': 8.5,
@@ -44,7 +44,7 @@ class messages:
 class permissions:
     # RANGOS POR ID: Sistema interno de Haseinha para dar permisos absolutos.
     # Colocamos el ID de tu bot y podés sumar tu propio ID de usuario cuando lo consigas.
-    owners = ['6ab1d5b3be121e4c4a3fe7d0']       # IDs de los dueños con control total
+    owners = ['69a113aed41925285a28e3cd']       # IDs de los dueños con control total
     moderators = ['6ab1d5b3be121e4c4a3fe7d0']   # IDs de los moderadores de la sala
 
 
