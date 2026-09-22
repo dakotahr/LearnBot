@@ -92,17 +92,18 @@ class Bot(BaseBot):
 
 
 # ===# =========================================================================
-# SECTOR 4: ARRANQUE AUTOMÁTICO (Punto de Entrada Corregido)
+# SECTOR 4: ARRANQUE AUTOMÁTICO (Solución Definitiva Asíncrona)
 # =========================================================================
 if __name__ == "__main__":
+    import asyncio  # Nos aseguramos de tener la librería de control asíncrono
     from highrise.__main__ import main, BotDefinition
     
     # Leemos las credenciales desde la carpeta config
     room_id = authorization.room
     token = authorization.token
     
-    # Adaptamos la carga a la versión nueva del SDK (Usando BotDefinition)
+    # Preparamos la definición del bot para el SDK moderno
     definitions = [BotDefinition(Bot(), room_id, token)]
     
-    # Ejecutamos pasando solo 1 argumento (la lista de definiciones)
-    main(definitions)
+    # ¡AQUÍ ESTÁ LA SOLUCIÓN! Ejecutamos la corrutina correctamente
+    asyncio.run(main(definitions))
