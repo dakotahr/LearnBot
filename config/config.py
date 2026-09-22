@@ -8,7 +8,7 @@ class config:
     botID = '6ab1d5b3be121e4c4a3fe7d0'    # ID de tu nuevo bot beBot33
     botName = 'beBot33'                  # Nombre oficial del nuevo bot
     ownerName = 'IamDakota'              # Tu nombre de usuario
-    roomName = 'IamDakota's Room'       # Nombre descriptivo para tu sala
+    roomName = 'Sala de IamDakota'       # Nombre descriptivo para tu sala
     
     # Coordenadas exactas donde aparecerá el bot al entrar a la sala
     coordinates = {
