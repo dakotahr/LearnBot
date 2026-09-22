@@ -4,40 +4,30 @@
             "user_id": "6ab1d5b3be121e4c4a3fe7d0",
             "username": "beBot33",
             "permissions": [
-                "emote",
-                "teleport",
-                "print",
-                "say",
-                "walk",
-                "help"
+                "fun",
+                "general",
+                "help",
+                "moderation"
             ]
         },
         {
             "user_id": "",
             "username": "IamDakota",
             "permissions": [
-                "emote",
-                "teleport",
-                "print",
-                "say",
-                "walk",
+                "fun",
+                "general",
                 "help",
-                "moderation",
-                "all"
+                "moderation"
             ]
         },
         {
             "user_id": "",
             "username": "iamdakota",
             "permissions": [
-                "emote",
-                "teleport",
-                "print",
-                "say",
-                "walk",
+                "fun",
+                "general",
                 "help",
-                "moderation",
-                "all"
+                "moderation"
             ]
         }
     ]
