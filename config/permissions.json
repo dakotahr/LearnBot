@@ -8,7 +8,8 @@
                 "teleport",
                 "print",
                 "say",
-                "walk"
+                "walk",
+                "help"
             ]
         },
         {
@@ -19,7 +20,24 @@
                 "teleport",
                 "print",
                 "say",
-                "walk"
+                "walk",
+                "help",
+                "moderation",
+                "all"
+            ]
+        },
+        {
+            "user_id": "",
+            "username": "iamdakota",
+            "permissions": [
+                "emote",
+                "teleport",
+                "print",
+                "say",
+                "walk",
+                "help",
+                "moderation",
+                "all"
             ]
         }
     ]
