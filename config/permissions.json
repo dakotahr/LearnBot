@@ -1,8 +1,8 @@
 {
     "permissions": [
         {
-            "user_id": "change-me",
-            "username": "change-me",
+            "user_id": "6ab1d5b3be121e4c4a3fe7d0",
+            "username": "beBot33",
             "permissions": [
                 "emote",
                 "teleport",
@@ -12,8 +12,8 @@
             ]
         },
         {
-            "user_id": "change-me",
-            "username": "change-me",
+            "user_id": "AQUI_VA_TU_ID_DE_USER_SI_LO_CONSEGUIS",
+            "username": "IamDakota",
             "permissions": [
                 "emote",
                 "teleport",
