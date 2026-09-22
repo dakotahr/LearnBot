@@ -91,13 +91,18 @@ class Bot(BaseBot):
         await __main__.main(self, room_id, token)
 
 
-# =========================================================================
-# SECTOR 4: ARRANQUE AUTOMÁTICO (Punto de Entrada)
+# ===# =========================================================================
+# SECTOR 4: ARRANQUE AUTOMÁTICO (Punto de Entrada Corregido)
 # =========================================================================
 if __name__ == "__main__":
-    # Lee de forma automática las variables guardadas dentro de tu config/config.py
+    from highrise.__main__ import main, BotDefinition
+    
+    # Leemos las credenciales desde la carpeta config
     room_id = authorization.room
     token = authorization.token
     
-    # Enciende el bot pasándole las credenciales obtenidas
-    arun(Bot().run(room_id, token))
+    # Adaptamos la carga a la versión nueva del SDK (Usando BotDefinition)
+    definitions = [BotDefinition(Bot(), room_id, token)]
+    
+    # Ejecutamos pasando solo 1 argumento (la lista de definiciones)
+    main(definitions)
