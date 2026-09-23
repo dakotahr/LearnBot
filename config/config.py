@@ -44,8 +44,8 @@ class messages:
 class permissions:
     # RANGOS POR ID: Sistema interno de Haseinha para dar permisos absolutos.
     # Colocamos el ID de tu bot en owners y en moderators para que tenga control total.
-    owners = ['6ab1d5b3be121e4c4a3fe7d0']       
-    moderators = ['6ab1d5b3be121e4c4a3fe7d0']   
+    owners = ['6ab1d5b3be121e4c4a3fe7d0' , '670ee03a3fb7c8c6e59bbd76]       
+    moderators = ['6ab1d5b3be121e4c4a3fe7d0' , '670ee03a3fb7c8c6e59bbd76]   
 
 
 class authorization:
