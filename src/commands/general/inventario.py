@@ -16,7 +16,7 @@ class Command:
                 user.id,
                 f"Respuesta de inventario: {inventario}"
             )
-            outfit = await self.bot.highrise.get_outfit()
+            outfit = await self.bot.highrise.get_my_outfit()
 
             await self.bot.highrise.send_whisper(
                 user.id,
