@@ -11,51 +11,30 @@ self.cooldown = 5
 ```
 async def execute(self, user: User, args: list, message: str):
     try:
-        # ============================================================
-        # 📦 INVENTARIO
-        # ============================================================
         inventario = await self.bot.highrise.get_inventory()
 
-        # ============================================================
-        # 👕 OUTFIT ACTUAL
-        # ============================================================
         outfit = await self.bot.highrise.get_outfit()
 
-        # ------------------------------------------------------------
-        # Convertimos el inventario a una lista más fácil de leer
-        # ------------------------------------------------------------
         inventario_ids = []
 
         for item in inventario.items:
             inventario_ids.append(item.id)
 
-        # ------------------------------------------------------------
-        # Convertimos el outfit actual a una lista más fácil de leer
-        # ------------------------------------------------------------
         outfit_ids = []
 
-        for item in outfit:
+        for item in outfit.items:
             outfit_ids.append(item.id)
 
-        # ------------------------------------------------------------
-        # Mensaje del inventario
-        # ------------------------------------------------------------
-        mensaje_inventario = (
-            "📦 INVENTARIO DEL BOT\n\n"
-            + "\n".join(f"- {item_id}" for item_id in inventario_ids)
-        )
+        mensaje_inventario = "INVENTARIO DEL BOT\n\n"
 
-        # ------------------------------------------------------------
-        # Mensaje del outfit actual
-        # ------------------------------------------------------------
-        mensaje_outfit = (
-            "👕 OUTFIT ACTUAL DEL BOT\n\n"
-            + "\n".join(f"- {item_id}" for item_id in outfit_ids)
-        )
+        for item_id in inventario_ids:
+            mensaje_inventario += f"- {item_id}\n"
 
-        # ------------------------------------------------------------
-        # Enviamos ambos resultados por whisper
-        # ------------------------------------------------------------
+        mensaje_outfit = "OUTFIT ACTUAL DEL BOT\n\n"
+
+        for item_id in outfit_ids:
+            mensaje_outfit += f"- {item_id}\n"
+
         await self.bot.highrise.send_whisper(
             user.id,
             mensaje_inventario
@@ -69,7 +48,6 @@ async def execute(self, user: User, args: list, message: str):
     except Exception as e:
         await self.bot.highrise.send_whisper(
             user.id,
-            f"❌ Error al consultar:\n"
-            f"{type(e).__name__}: {e}"
+            f"ERROR:\n{type(e).__name__}: {e}"
         )
 ```
