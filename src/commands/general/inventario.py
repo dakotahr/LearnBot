@@ -12,23 +12,13 @@ class Command:
         try:
             inventario = await self.bot.highrise.get_inventory()
 
-            if not inventario:
-                await self.bot.highrise.send_whisper(
-                    user.id,
-                    "El bot no tiene prendas en su inventario."
-                )
-                return
-
-            mensaje = "👕 Ropa que tiene el bot:\n"
-
-            for item in inventario:
-                mensaje += f"\nID: {item.id}"
-
-            await self.bot.highrise.send_whisper(user.id, mensaje)
-
-        except Exception as e:
-            print(f"Error al obtener el inventario: {e}")
             await self.bot.highrise.send_whisper(
                 user.id,
-                "No pude consultar el inventario del bot."
+                f"Respuesta de inventario: {inventario}"
+            )
+
+        except Exception as e:
+            await self.bot.highrise.send_whisper(
+                user.id,
+                f"❌ Error al consultar inventario:\n{type(e).__name__}: {e}"
             )
