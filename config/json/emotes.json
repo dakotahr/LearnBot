@@ -54,5 +54,9 @@
   "emote-pose3",
   "emote-pose5",
   "emote-cutey",
-  "dance-zombie"
+  "dance-zombie",
+  "dance-duckwalk",
+  "dance-smoothwalk",
+  "dance-touch",
+  "dance-hipshake"
 ]
