@@ -16,7 +16,12 @@ class Command:
                 user.id,
                 f"Respuesta de inventario: {inventario}"
             )
+            outfit = await self.bot.highrise.get_outfit()
 
+            await self.bot.highrise.send_whisper(
+                user.id,
+                f"Respuesta de outfit: {outfit}"
+            )
         except Exception as e:
             await self.bot.highrise.send_whisper(
                 user.id,
