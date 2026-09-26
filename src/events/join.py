@@ -1,24 +1,27 @@
 import random
+import asyncio  # IMPORTANTE: Traemos la librería de tiempo
 from highrise.models import User
 from config.config import loggers
 
 async def on_join(bot, user: User, position) -> None:
-    # 1. Registro de consola original por si lo activás en config
     if loggers.joins:
         print(f"User {user.username} joined the room")
 
-    # Evitamos saludar al propio bot si es él quien entra o se reconecta
     if user.username == "beBot33":
         return
 
-    # 📝 BANCO DE SALUDOS: El bot elegirá uno de estos tres al azar para empezar
+    # ⏱️ ¡EL SALVAVIDAS!: Hacemos que el bot espere 2 segundos quietito
+    # Esto le da tiempo al juego de cargar al usuario y evita que el bot se caiga
+    await asyncio.sleep(2)
+
+    # 📝 BANCO DE SALUDOS
     saludos_base = [
         f"¡Hola {user.username}! Bienvenido/a a la sala. Pásala genial. ❤️",
         f"✨ ¡Qué alegría verte por acá {user.username}! Ponete cómodo/a. ✨",
         f"👋 ¡Buenas buenas {user.username}! Bienvenido/a a nuestro rincón."
     ]
 
-    # 🎭 BANCO DE CHISTES: Frases divertidas que se pueden sumar al final
+    # 🎭 BANCO DE CHISTES
     remates_divertidos = [
         "¡Qué elegancia la de Francia! 🇫🇷",
         "Me encantan tus vibras hoy. 😎",
@@ -26,15 +29,12 @@ async def on_join(bot, user: User, position) -> None:
         "Cuidado con los pasos de baile, están picantes. 🔥"
     ]
 
-    # El bot elige un saludo base al azar
     saludo_final = random.choice(saludos_base)
 
-    # El bot tiene un 50% de probabilidad de sumarle un comentario divertido al final
     if random.random() < 0.5:
         saludo_final += f" {random.choice(remates_divertidos)}"
 
-    # 🔮 ENVÍO DEL SUSURRO:
-    # Se lo enviamos como susurro privado directo al ID del jugador que entró
+    # Envío del susurro seguro después de la espera
     try:
         await bot.highrise.send_whisper(user.id, saludo_final)
     except Exception as e:
