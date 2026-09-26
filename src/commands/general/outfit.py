@@ -6,45 +6,71 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "outfit"
-        self.description = "Cambia el conjunto de ropa del bot. Uso: /outfit 1 o /outfit 2"
-        self.permissions = []  # Libre por si querés que la gente lo cambie, o poné tu restricción
+        self.description = "Cambia el look del bot a sus conjuntos fijos de fábrica. Uso: /outfit 1 o /outfit 2"
+        self.permissions = [] # Libre para que juegues vos y tus visitantes
         self.cooldown = 5
 
     async def execute(self, user: User, args: list, message: str):
+        # 1. Validación de argumentos
         if len(args) == 0:
-            await self.bot.highrise.send_whisper(user.id, "Uso correcto: /outfit 1 o /outfit 2")
+            await self.bot.highrise.send_whisper(user.id, "⚠️ Uso correcto: /outfit 1 (Fábrica) o /outfit 2 (Elegante)")
             return
 
-        opcion = args[0].strip()
+        opcion = args.strip()
 
         # =========================================================================
-        # 👗 CONFIGURACIÓN DE TUS CONJUNTOS (IDs Técnicos de Ropa)
+        # 👕 CONJUNTO 1: FACHA DE FÁBRICA TRADICIONAL
         # =========================================================================
-        # Nota para Dakota: Mañana buscaremos los IDs reales de la ropa que le regalaste
-        # y los reemplazaremos acá adentro de las comillas simples.
-        
         if opcion == "1":
-            await self.bot.highrise.chat("👕 Cambiando al conjunto informal...")
-            nuevo_look = [
-                Item(type='clothing', amount=1, id='body-flesh', account_bound=False), # Base del cuerpo
-                Item(type='clothing', amount=1, id='shirt-n_basicshirt', account_bound=False), # Reemplazar ID de remera
-                Item(type='clothing', amount=1, id='pants-n_basicpants', account_bound=False), # Reemplazar ID de pantalón
-            ]
+            await self.bot.highrise.chat("👕 Cambiando al outfit 1 (Clásico de fábrica)... ✨")
             
-        elif opcion == "2":
-            await self.bot.highrise.chat("👔 Cambiando al conjunto elegante...")
-            nuevo_look = [
+            conjunto_1 = [
+                Item(type='clothing', amount=1, id='hair_front-n_malenew05', account_bound=False),
+                Item(type='clothing', amount=1, id='hair_back-n_malenew05', account_bound=False),
                 Item(type='clothing', amount=1, id='body-flesh', account_bound=False),
-                Item(type='clothing', amount=1, id='shirt-n_suitshirt', account_bound=False), # Reemplazar ID de remera 2
-                Item(type='clothing', amount=1, id='pants-n_suitpants', account_bound=False), # Reemplazar ID de pantalón 2
+                Item(type='clothing', amount=1, id='eye-n_basic2018malesquaresleepy', account_bound=False),
+                Item(type='clothing', amount=1, id='eyebrow-n_basic2018newbrows07', account_bound=False),
+                Item(type='clothing', amount=1, id='nose-n_basic2018newnose05', account_bound=False),
+                Item(type='clothing', amount=1, id='mouth-basic2018chippermouth', account_bound=False),
+                Item(type='clothing', amount=1, id='freckle-n_basic2018freckle04', account_bound=False),
+                Item(type='clothing', amount=1, id='shirt-n_room32019denimjackethoodie', account_bound=False),
+                Item(type='clothing', amount=1, id='pants-n_starteritems2019cuffedjeanswhite', account_bound=False),
+                Item(type='clothing', amount=1, id='shoes-n_room32019socksneakersgrey', account_bound=False)
             ]
-        else:
-            await self.bot.highrise.send_whisper(user.id, "Conjunto no encontrado. Elige 1 o 2.")
-            return
 
-        # Execución del cambio de ropa en el servidor de Highrise
-        try:
-            await self.bot.highrise.set_outfit(nuevo_look)
-        except Exception as e:
-            print(f"Error al cambiar outfit: {e}")
-            await self.bot.highrise.send_whisper(user.id, "No se pudo cambiar la ropa. Verifica si el bot es dueño de esos ítems.")
+            try:
+                await self.bot.highrise.set_outfit(conjunto_1)
+            except Exception as e:
+                print(f"Error al cambiar al outfit 1: {e}")
+                await self.bot.highrise.send_whisper(user.id, "❌ No se pudo aplicar el outfit 1.")
+
+        # =========================================================================
+        # 👔 CONJUNTO 2: LOOK CANCHERO CON MOCHILA Y CAMPERA UNIVERSITARIA
+        # =========================================================================
+        elif opcion == "2":
+            await self.bot.highrise.chat("👔 Cambiando al outfit 2 (Canchero Universitario)... ✨")
+            
+            conjunto_2 = [
+                Item(type='clothing', amount=1, id='body-flesh', account_bound=False),
+                Item(type='clothing', amount=1, id='eyebrow-n_basic2018newbrows07', account_bound=False),
+                Item(type='clothing', amount=1, id='hair_front-n_malenew05', account_bound=False),
+                Item(type='clothing', amount=1, id='hair_back-n_malenew05', account_bound=False),
+                Item(type='clothing', amount=1, id='eye-n_animecollection2018bishoneneyes', account_bound=False),
+                Item(type='clothing', amount=1, id='nose-n_basic2018newnose19', account_bound=False),
+                Item(type='clothing', amount=1, id='mouth-basic2018thinpeaked', account_bound=False),
+                Item(type='clothing', amount=1, id='hat-n_casualteenskypass2021brownsunglasses', account_bound=False),
+                Item(type='clothing', amount=1, id='pants-n_room22019longcutoffsdenim', account_bound=False),
+                Item(type='clothing', amount=1, id='shirt-n_starteritems2019tankwhite', account_bound=False),
+                Item(type='clothing', amount=1, id='shirt-n_vintagethriftjanuaryskypass2023varsityjacketdenim', account_bound=False),
+                Item(type='clothing', amount=1, id='bag-n_junedailyrewardscow2018cowbackpack', account_bound=False),
+                Item(type='clothing', amount=1, id='shoes-n_room12019sneakersblack', account_bound=False)
+            ]
+
+            try:
+                await self.bot.highrise.set_outfit(conjunto_2)
+            except Exception as e:
+                print(f"Error al cambiar al outfit 2: {e}")
+                await self.bot.highrise.send_whisper(user.id, "❌ No se pudo aplicar el outfit 2. ¿El bot es dueño de estas prendas?")
+
+        else:
+            await self.bot.highrise.send_whisper(user.id, "⚠️ Conjunto no encontrado. Elige entre 1 o 2.")
