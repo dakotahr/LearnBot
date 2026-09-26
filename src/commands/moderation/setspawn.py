@@ -7,14 +7,13 @@ class Command:
         self.bot = bot
         self.name = "setspawn"
         self.description = "Guarda tu posición actual como el nuevo punto de aparición del bot."
-        self.permissions = ["moderation"] # Solo vos podés usarlo
+        self.permissions = ["moderation"]
         self.cooldown = 5
 
     async def execute(self, user: User, args: list, message: str):
         await self.bot.highrise.chat("⚙️ Escaneando coordenadas actuales...")
         
         try:
-            # 1. Buscamos tu posición exacta en la sala
             response = await self.bot.highrise.get_room_users()
             tu_posicion = None
             
@@ -27,7 +26,6 @@ class Command:
                 await self.bot.highrise.send_whisper(user.id, "❌ No pude detectar tus coordenadas. Muévete un paso e intenta de nuevo.")
                 return
 
-            # 2. Armamos la estructura de datos igualita al config.py
             datos_spawn = {
                 "x": tu_posicion.x,
                 "y": tu_posicion.y,
@@ -35,8 +33,8 @@ class Command:
                 "facing": str(tu_posicion.facing)
             }
 
-            # 3. ¡LA MAGIA!: Escribimos el archivo en el disco de Render para que no se borre
-            ruta_archivo = 'config/json/spawn.json'
+            # 🔮 ¡RUTA DIRECTA LIBERADA!: Guardamos suelto en la raíz de Render
+            ruta_archivo = 'spawn.json'
             with open(ruta_archivo, 'w') as f:
                 json.dump(datos_spawn, f, indent=4)
 
@@ -44,4 +42,4 @@ class Command:
 
         except Exception as e:
             print(f"Error en comando setspawn: {e}")
-            await self.bot.highrise.send_whisper(user.id, "❌ Ocurrió un error al intentar guardar las coordenadas.")
+            await self.bot.highrise.send_whisper(user.id, f"❌ Error de escritura: {type(e).__name__}")
