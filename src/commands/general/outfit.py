@@ -6,7 +6,7 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "outfit"
-        self.description = "Cambia el look del bot. Uso: /outfit 1, /outfit 2 o /outfit info"
+        self.description = "Cambia el look del bot. Uso: /outfit 1 o /outfit 2"
         self.permissions = []
         self.cooldown = 5
 
@@ -19,7 +19,7 @@ class Command:
         if not args:
             await self.bot.highrise.send_whisper(
                 user.id,
-                "⚠️ Uso: /outfit 1, /outfit 2 o /outfit info"
+                "⚠️ Uso: /outfit 1 o /outfit 2"
             )
             return
 
@@ -37,6 +37,8 @@ class Command:
 
             conjunto_1 = [
 
+                # IMPORTANTE:
+                # body-flesh es obligatorio para set_outfit
                 Item(
                     type="clothing",
                     amount=1,
@@ -148,6 +150,8 @@ class Command:
 
             conjunto_2 = [
 
+                # IMPORTANTE:
+                # body-flesh es obligatorio para set_outfit
                 Item(
                     type="clothing",
                     amount=1,
@@ -255,47 +259,12 @@ class Command:
             return
 
         # ============================================================
-        # INFORMACION DEL OUTFIT ACTUAL
-        # ============================================================
-
-                elif opcion == "info":
-
-            try:
-
-                outfit_actual = await self.bot.highrise.get_my_outfit()
-
-                texto = "OUTFIT ACTUAL\n\n"
-
-                for item in outfit_actual.items:
-
-                    texto += (
-                        f"ID: {item.id}\n"
-                        f"Paleta: {item.active_palette}\n\n"
-                    )
-
-                await self.bot.highrise.send_whisper(
-                    user.id,
-                    texto
-                )
-
-            except Exception as e:
-
-                print(f"[OUTFIT INFO] Error: {e}")
-
-                await self.bot.highrise.send_whisper(
-                    user.id,
-                    f"Error al consultar outfit: {e}"
-                )
-
-            return
-
-        # ============================================================
-        # OPCION INCORRECTA
+        # OPCIÓN INCORRECTA
         # ============================================================
 
         else:
 
             await self.bot.highrise.send_whisper(
                 user.id,
-                "⚠️ Outfit no encontrado. Usá /outfit 1, /outfit 2 o /outfit info."
+                "⚠️ Outfit no encontrado. Usá /outfit 1 o /outfit 2."
             )
