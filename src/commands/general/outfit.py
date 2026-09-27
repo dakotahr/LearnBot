@@ -264,9 +264,9 @@ class Command:
 
                 outfit_actual = await self.bot.highrise.get_my_outfit()
 
-                texto = "👕 OUTFIT ACTUAL\n\n"
+texto = "👕 OUTFIT ACTUAL\n\n"
 
-                for item in outfit_actual:
+for item in outfit_actual.items:
                     texto += (
                         f"ID: {item.id}\n"
                         f"Paleta: {item.active_palette}\n\n"
