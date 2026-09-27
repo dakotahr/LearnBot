@@ -262,7 +262,7 @@ class Command:
 
             try:
 
-                outfit_actual = await self.bot.highrise.get_outfit()
+                outfit_actual = await self.bot.highrise.get_my_outfit()
 
                 texto = "👕 OUTFIT ACTUAL\n\n"
 
