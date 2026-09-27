@@ -171,7 +171,7 @@ class Command:
                     type="clothing",
                     amount=1,
                     id="hair_front-n_malenew05",
-                    account_bound=False
+                    account_bound=False,
                     active_palette=1
                 ),
 
@@ -179,7 +179,7 @@ class Command:
                     type="clothing",
                     amount=1,
                     id="hair_back-n_malenew05",
-                    account_bound=False
+                    account_bound=False,
                     active_palette=1
                 ),
 
