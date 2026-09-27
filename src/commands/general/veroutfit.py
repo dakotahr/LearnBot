@@ -15,9 +15,18 @@ class Command:
 
             respuesta = await self.bot.highrise.get_my_outfit()
 
+            texto = "👕 OUTFIT ACTUAL\n\n"
+
+            for item in respuesta.outfit:
+
+                texto += (
+                    f"ID: {item.id}\n"
+                    f"Paleta: {item.active_palette}\n\n"
+                )
+
             await self.bot.highrise.send_whisper(
                 user.id,
-                str(respuesta)
+                texto
             )
 
         except Exception as e:
