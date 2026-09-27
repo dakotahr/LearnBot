@@ -258,6 +258,36 @@ class Command:
 
             return
 
+                elif opcion == "info":
+
+            try:
+
+                outfit_actual = await self.bot.highrise.get_outfit()
+
+                texto = "👕 OUTFIT ACTUAL\n\n"
+
+                for item in outfit_actual:
+                    texto += (
+                        f"ID: {item.id}\n"
+                        f"Paleta: {item.active_palette}\n\n"
+                    )
+
+                await self.bot.highrise.send_whisper(
+                    user.id,
+                    texto
+                )
+
+            except Exception as e:
+
+                print(f"[OUTFIT INFO] Error: {e}")
+
+                await self.bot.highrise.send_whisper(
+                    user.id,
+                    f"❌ Error al consultar outfit: {e}"
+                )
+
+            return
+
         # ============================================================
         # OPCIÓN INCORRECTA
         # ============================================================
@@ -266,5 +296,5 @@ class Command:
 
             await self.bot.highrise.send_whisper(
                 user.id,
-                "⚠️ Outfit no encontrado. Usá /outfit 1 o /outfit 2."
+                "⚠️ Outfit no encontrado. Usá /outfit 1, /outfit 2 o /outfit info."
             )
