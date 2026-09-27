@@ -6,7 +6,7 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "outfit"
-        self.description = "Cambia el look del bot. Uso: /outfit 1 o /outfit 2"
+        self.description = "Cambia el look del bot. Uso: /outfit 1, /outfit 2 o /outfit info"
         self.permissions = []
         self.cooldown = 5
 
@@ -19,7 +19,7 @@ class Command:
         if not args:
             await self.bot.highrise.send_whisper(
                 user.id,
-                "⚠️ Uso: /outfit 1 o /outfit 2"
+                "⚠️ Uso: /outfit 1, /outfit 2 o /outfit info"
             )
             return
 
@@ -37,8 +37,6 @@ class Command:
 
             conjunto_1 = [
 
-                # IMPORTANTE:
-                # body-flesh es obligatorio para set_outfit
                 Item(
                     type="clothing",
                     amount=1,
@@ -150,8 +148,6 @@ class Command:
 
             conjunto_2 = [
 
-                # IMPORTANTE:
-                # body-flesh es obligatorio para set_outfit
                 Item(
                     type="clothing",
                     amount=1,
@@ -258,7 +254,11 @@ class Command:
 
             return
 
-                elif opcion == "info":
+        # ============================================================
+        # INFORMACION DEL OUTFIT ACTUAL
+        # ============================================================
+
+        elif opcion == "info":
 
             try:
 
@@ -289,7 +289,7 @@ class Command:
             return
 
         # ============================================================
-        # OPCIÓN INCORRECTA
+        # OPCION INCORRECTA
         # ============================================================
 
         else:
