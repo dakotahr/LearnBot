@@ -1,7 +1,7 @@
 from highrise import User
 
 class Command:
-def **init**(self, bot):
+def __init__(self, bot):
 self.bot = bot
 self.name = "veroutfit"
 self.description = "Prueba del comando veroutfit"
@@ -12,6 +12,6 @@ self.cooldown = 5
 async def execute(self, user: User, args: list):
     await self.bot.highrise.send_whisper(
         user.id,
-        "✅ El comando veroutfit funciona."
+        "OK - el comando veroutfit funciona."
     )
 ```
