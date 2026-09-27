@@ -172,6 +172,7 @@ class Command:
                     amount=1,
                     id="hair_front-n_malenew05",
                     account_bound=False
+                    active_palette=1
                 ),
 
                 Item(
@@ -179,6 +180,7 @@ class Command:
                     amount=1,
                     id="hair_back-n_malenew05",
                     account_bound=False
+                    active_palette=1
                 ),
 
                 Item(
