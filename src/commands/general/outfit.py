@@ -258,15 +258,16 @@ class Command:
         # INFORMACION DEL OUTFIT ACTUAL
         # ============================================================
 
-        elif opcion == "info":
+                elif opcion == "info":
 
             try:
 
                 outfit_actual = await self.bot.highrise.get_my_outfit()
 
-texto = "👕 OUTFIT ACTUAL\n\n"
+                texto = "OUTFIT ACTUAL\n\n"
 
-for item in outfit_actual.items:
+                for item in outfit_actual.items:
+
                     texto += (
                         f"ID: {item.id}\n"
                         f"Paleta: {item.active_palette}\n\n"
@@ -283,7 +284,7 @@ for item in outfit_actual.items:
 
                 await self.bot.highrise.send_whisper(
                     user.id,
-                    f"❌ Error al consultar outfit: {e}"
+                    f"Error al consultar outfit: {e}"
                 )
 
             return
