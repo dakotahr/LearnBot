@@ -58,7 +58,7 @@ class Bot(BaseBot):
         await handle_whisper(self, user, message)
 
     # Cuando un jugador entra a la sala...
-    async def on_user_join(self, user: User) -> None:
+    async def on_user_join(self, user: User, position) -> None:
         # Va al archivo handleEvents.py, donde seguro está el mensaje de bienvenida o el contador
         await handle_join(self, user)
 
