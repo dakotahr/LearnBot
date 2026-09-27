@@ -171,14 +171,14 @@ class Command:
                     type="clothing",
                     amount=1,
                     id="hair_front-n_malenew05",
-                    account_bound=1
+                    account_bound=False
                 ),
 
                 Item(
                     type="clothing",
                     amount=1,
                     id="hair_back-n_malenew05",
-                    account_bound=1
+                    account_bound=False
                 ),
 
                 Item(
