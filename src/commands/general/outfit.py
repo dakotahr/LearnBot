@@ -12,6 +12,10 @@ self.cooldown = 5
 ```
 async def execute(self, user: User, args: list, message: str):
 
+    # ============================================================
+    # VALIDAR ARGUMENTO
+    # ============================================================
+
     if not args:
         await self.bot.highrise.send_whisper(
             user.id,
@@ -22,7 +26,7 @@ async def execute(self, user: User, args: list, message: str):
     opcion = args[0].strip()
 
     # ============================================================
-    # OUTFIT 1 - SIN CAMBIOS
+    # OUTFIT 1
     # ============================================================
 
     if opcion == "1":
@@ -33,6 +37,8 @@ async def execute(self, user: User, args: list, message: str):
 
         conjunto_1 = [
 
+            # IMPORTANTE:
+            # body-flesh es obligatorio para set_outfit
             Item(
                 type="clothing",
                 amount=1,
@@ -133,7 +139,7 @@ async def execute(self, user: User, args: list, message: str):
         return
 
     # ============================================================
-    # OUTFIT 2 - BASADO EN LA LISTA QUE PASASTE
+    # OUTFIT 2
     # ============================================================
 
     elif opcion == "2":
@@ -144,6 +150,8 @@ async def execute(self, user: User, args: list, message: str):
 
         conjunto_2 = [
 
+            # IMPORTANTE:
+            # body-flesh es obligatorio para set_outfit
             Item(
                 type="clothing",
                 amount=1,
@@ -156,16 +164,7 @@ async def execute(self, user: User, args: list, message: str):
                 type="clothing",
                 amount=1,
                 id="eyebrow-n_basic2018newbrows07",
-                account_bound=False,
-                active_palette=14
-            ),
-
-            Item(
-                type="clothing",
-                amount=1,
-                id="nose-n_basic2018newnose05",
-                account_bound=False,
-                active_palette=0
+                account_bound=False
             ),
 
             Item(
@@ -188,64 +187,63 @@ async def execute(self, user: User, args: list, message: str):
                 type="clothing",
                 amount=1,
                 id="eye-n_animecollection2018bishoneneyes",
-                account_bound=False,
-                active_palette=22
+                account_bound=False
+            ),
+
+            Item(
+                type="clothing",
+                amount=1,
+                id="nose-n_basic2018newnose05",
+                account_bound=False
             ),
 
             Item(
                 type="clothing",
                 amount=1,
                 id="mouth-basic2018fullpeaked",
-                account_bound=False,
-                active_palette=22
+                account_bound=False
             ),
 
             Item(
                 type="clothing",
                 amount=1,
                 id="hat-n_casualteenskypass2021brownsunglasses",
-                account_bound=False,
-                active_palette=0
+                account_bound=False
             ),
 
             Item(
                 type="clothing",
                 amount=1,
                 id="shirt-n_room32019jerseywhite",
-                account_bound=False,
-                active_palette=0
+                account_bound=False
             ),
 
             Item(
                 type="clothing",
                 amount=1,
                 id="shirt-n_vintagethriftjanuaryskypass2023varsityjacketdenim",
-                account_bound=False,
-                active_palette=0
-            ),
-
-            Item(
-                type="clothing",
-                amount=1,
-                id="shoes-n_room12019sneakersblack",
-                account_bound=False,
-                active_palette=0
-            ),
-
-            Item(
-                type="clothing",
-                amount=1,
-                id="pants-n_room22019longcutoffsdenim",
-                account_bound=False,
-                active_palette=0
+                account_bound=False
             ),
 
             Item(
                 type="clothing",
                 amount=1,
                 id="bag-n_junedailyrewardscow2018cowbackpack",
-                account_bound=False,
-                active_palette=0
+                account_bound=False
+            ),
+
+            Item(
+                type="clothing",
+                amount=1,
+                id="shoes-n_room12019sneakersblack",
+                account_bound=False
+            ),
+
+            Item(
+                type="clothing",
+                amount=1,
+                id="pants-n_room22019longcutoffsdenim",
+                account_bound=False
             )
         ]
 
@@ -279,3 +277,4 @@ async def execute(self, user: User, args: list, message: str):
             user.id,
             "⚠️ Outfit no encontrado. Usá /outfit 1 o /outfit 2."
         )
+```
