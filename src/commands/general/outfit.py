@@ -277,4 +277,3 @@ async def execute(self, user: User, args: list, message: str):
             user.id,
             "⚠️ Outfit no encontrado. Usá /outfit 1 o /outfit 2."
         )
-```
