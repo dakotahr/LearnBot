@@ -1,27 +1,42 @@
 from highrise.models import User
 from config.config import loggers, config
 
-
 async def on_chat(bot, user: User, message: str) -> None:
-    # 1. Registro de consola original
     if loggers.messages:
         print(f"{user.username}: {message}")
 
-    # 🔮 INTERCEPTOR DE TRIVIA:
-    # Limpiamos el mensaje de espacios y lo pasamos a minúsculas
     msg_limpio = message.strip().lower()
 
-    # Si hay una trivia corriendo en la sala y el usuario escribió "a", "b" o "c"...
+    # Si hay una trivia corriendo y escriben la letra justa...
     if hasattr(bot, 'trivia_activa') and bot.trivia_activa and msg_limpio in ['a', 'b', 'c']:
-        # Comparamos si la letra coincide exactamente con la respuesta ganadora
         if msg_limpio == bot.respuesta_correcta:
-            bot.trivia_activa = False  # Apagamos la trivia inmediatamente para que nadie más gane
-            bot.respuesta_correcta = "" # Limpiamos la respuesta de la memoria
+            # Guardamos los estados antes de apagarlos
+            paga_oro = bot.trivia_paga_oro
             
-            # El bot grita el ganador en la sala celebrando
-            await bot.highrise.chat(f"🎉 ¡Felicidades @{user.username}! Respondiste correctamente y ganaste la trivia. 🧠✨")
-            return # Frenamos el código acá para que no intente procesar la letra como un comando
+            bot.trivia_activa = False  
+            bot.respuesta_correcta = "" 
+            bot.trivia_paga_oro = False 
+            
+            # Anuncio de victoria básico
+            await bot.highrise.chat(f"🎉 ¡Felicidades @{user.username}! Respondiste correctamente. 🧠✨")
+            
+            # 🕺 ¡BAILE DE FESTEJO OBLIGATORIO!: Forzamos al ganador a celebrar
+            try:
+                # Elegimos una animación divertida de festejo o saludo
+                festejos = ["emote-celebrate", "emote-wave"]
+                await bot.highrise.send_emote(festejos[0], user.id)
+            except Exception as e:
+                print(f"No se pudo hacer bailar al ganador: {e}")
 
-    # 2. Procesador de comandos original con prefijo (ejemplo: /loop)
+            # 💰 ¡PREMIO DE CAJERO AUTOMÁTICO!: Si el dueño activó el modo oro, el bot le paga en el acto
+            if paga_oro:
+                try:
+                    await bot.highrise.chat(f"🎁 Guardando 1 de oro de la alcancía en el bolsillo de @{user.username}...")
+                    await bot.highrise.tip_user(user.id, 1)
+                except Exception as e:
+                    print(f"Error al pagar premio de trivia: {e}")
+            
+            return 
+            
     if message.lstrip().startswith(config.prefix):
         await bot.command_handler.handle_command(user, message)
