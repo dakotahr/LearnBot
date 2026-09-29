@@ -6,17 +6,18 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "trivia"
-        self.description = "Lanza una pregunta de trivia por tiempo en la sala. Responde con A, B o C."
-        self.permissions = [] # Libre para que cualquier visitante la pueda iniciar
-        self.cooldown = 10     # Evita que tiren trivias seguidas todo el tiempo
+        self.description = "Lanza una pregunta de trivia. El dueño puede activar premio de oro usando '/trivia oro'."
+        self.permissions = [] # Libre para que cualquiera inicie una gratis
+        self.cooldown = 10     
 
-        # Creamos las variables en la memoria del bot si no existen
         if not hasattr(bot, 'trivia_activa'):
             bot.trivia_activa = False
         if not hasattr(bot, 'respuesta_correcta'):
             bot.respuesta_correcta = ""
+        # Nueva variable interna para saber si la pregunta actual paga oro
+        if not hasattr(bot, 'trivia_paga_oro'):
+            bot.trivia_paga_oro = False
 
-        # Nuestro banco de preguntas interno para el juego
         self.banco_preguntas = [
             {"p": "¿Cuál es el planeta más cercano al Sol?", "o": "A) Marte | B) Mercurio | C) Venus", "r": "b"},
             {"p": "¿Cuántos minutos tiene una hora?", "o": "A) 50 | B) 100 | C) 60", "r": "c"},
@@ -27,29 +28,49 @@ class Command:
         ]
 
     async def reloj_trivia(self, juego_id):
-        """Reloj invisible que espera 30 segundos en segundo plano"""
+        """Reloj invisible de 30 segundos"""
         await asyncio.sleep(30)
-        # Si pasaron los 30 segundos y la trivia sigue activa con esta misma pregunta...
         if self.bot.trivia_activa and self.bot.respuesta_correcta == juego_id:
             self.bot.trivia_activa = False
+            self.bot.trivia_paga_oro = False  # Apagamos el premio de oro si vence el tiempo
             r_mayuscula = self.bot.respuesta_correcta.upper()
-            await self.bot.highrise.chat(f"⏱️ ¡Tiempo agotado! Nadie respondió correctamente a tiempo. La respuesta era la ({r_mayuscula}).")
+            await self.bot.highrise.chat(f"⏱️ ¡Tiempo agotado! Nadie respondió a tiempo. La respuesta correcta era la ({r_mayuscula}).")
 
     async def execute(self, user: User, args: list, message: str):
-        # Si ya hay un juego corriendo, avisamos y frenamos
         if self.bot.trivia_activa:
-            await self.bot.highrise.send_whisper(user.id, "⚠️ Ya hay una trivia en curso. ¡Espera a que termine o responde A, B o C!")
+            await self.bot.highrise.send_whisper(user.id, "⚠️ Ya hay una trivia en curso. ¡Espera a que termine!")
             return
 
-        # Elegimos una pregunta al azar del banco
-        juego = random.choice(self.banco_preguntas)
+        # Revisamos si pasaron el argumento 'oro'
+        argumento = " ".join(args).strip().lower()
         
-        # Guardamos el estado en la memoria global del bot
+        # FILTRO DE SEGURIDAD: Solo vos (IamDakota) podés activar el modo oro
+        if argumento == "oro" and user.username.lower() == "iamdakota":
+            # Verificamos si el bot tiene oro en la billetera antes de prometerlo
+            try:
+                billetera = await self.bot.highrise.get_wallet()
+                oro_disponible = 0
+                for item in billetera.content:
+                    if item.type == 'gold':
+                        oro_disponible = item.amount
+                        break
+                
+                if oro_disponible >= 1:
+                    self.bot.trivia_paga_oro = True
+                    await self.bot.highrise.chat("💰 ¡ATENCIÓN COLA DE LA SALA! Esta trivia tiene premio especial de 1 ORO para el ganador. 💰")
+                else:
+                    await self.bot.highrise.send_whisper(user.id, "⚠️ No pude activar el modo oro porque la alcancía del bot está vacía.")
+                    self.bot.trivia_paga_oro = False
+            except Exception as e:
+                print(f"Error al verificar billetera en trivia: {e}")
+                self.bot.trivia_paga_oro = False
+        else:
+            self.bot.trivia_paga_oro = False
+
+        # Lanzamos el juego normal
+        juego = random.choice(self.banco_preguntas)
         self.bot.trivia_activa = True
-        self.bot.respuesta_correcta = juego["r"] # Guarda la letra 'a', 'b' o 'c'
+        self.bot.respuesta_correcta = juego["r"]
 
-        # Lanzamos el anuncio en la sala
-        await self.bot.highrise.chat(f"🧠 ¡TRIVIA TIME! 🧠\nPregunta: {juego['p']}\n👉 Opciones:\n{juego['o']}\n\n⏱️ ¡Tienen 30 segundos para responder con la letra en el chat!")
-
-        # Activamos el reloj en segundo plano
+        await self.bot.highrise.chat(f"🧠 ¡TRIVIA TIME! 🧠\nPregunta: {juego['p']}\n👉 Opciones:\n{juego['o']}\n\n⏱️ ¡Tienen 30 segundos!")
         asyncio.create_task(self.reloj_trivia(juego["r"]))
