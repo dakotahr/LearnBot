@@ -5,7 +5,7 @@ class Command:
         self.bot = bot
         self.name = "dormir"
         self.description = "Interrumpe la acción de un usuario obligándolo a sentarse. Uso: /dormir @usuario"
-        self.permissions = ["moderation"] # Exclusivo para vos y tus moderadores
+        self.permissions = ["moderation"]  # Exclusivo para vos y tus moderadores
         self.cooldown = 2
 
     async def execute(self, user: User, args: list, message: str):
@@ -34,13 +34,9 @@ class Command:
             # 3. Anuncio público divertido en el chat
             await self.bot.highrise.chat(f"💤 ¡Zzz! @{user.username} mandó a dormir a @{target_user.username}. 🛏️")
             
-            # 4. 🔥 CORRECCIÓN CLAVE: Pasamos las variables con nombres explícitos para el SDK moderno
-            # Forzamos la animación de sentado directamente en el personaje del jugador objetivo
-            await self.bot.highrise.send_emote(
-                emote_id="idle-loop-sitfloor", 
-                target_user_id=target_user.id
-            )
+            # 4. PASO TÉCNICO DE PRUEBA: Enviamos el emote directo usando el ID del jugador
+            await self.bot.highrise.send_emote("idle-loop-sitfloor", target_user.id)
 
         except Exception as e:
-            print(f"Error en comando dormir con nombres explícitos: {e}")
+            print(f"Error en comando dormir Prueba 1: {e}")
             await self.bot.highrise.send_whisper(user.id, "❌ No pude forzar la animación en el usuario.")
