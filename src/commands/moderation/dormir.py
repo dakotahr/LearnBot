@@ -4,7 +4,7 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "dormir"
-        self.description = "Sienta a la fuerza a un usuario en el suelo usando el sistema de moderación. Uso: /dormir @usuario"
+        self.description = "Interrumpe la acción de un usuario obligándolo a sentarse. Uso: /dormir @usuario"
         self.permissions = ["moderation"] # Exclusivo para vos y tus moderadores
         self.cooldown = 2
 
@@ -32,16 +32,15 @@ class Command:
                 return
 
             # 3. Anuncio público divertido en el chat
-            await self.bot.highrise.chat(f"💤 ¡Zzz! @{user.username} mandó a dormir a @{target_user.username} al suelo de la sala. 🛏️")
+            await self.bot.highrise.chat(f"💤 ¡Zzz! @{user.username} mandó a dormir a @{target_user.username}. 🛏️")
             
-            # 4. 🔥 EL PARCHE REAL: Usamos la función oficial de moderación para sentarlo en el piso
-            # Pasamos el ID del usuario, la acción 'sit' (sentar) y el tipo de anclaje de suelo ('floor')
-            await self.bot.highrise.moderate_room(
-                user_id=target_user.id,
-                action="sit",
-                anchor="floor"
+            # 4. 🔥 CORRECCIÓN CLAVE: Pasamos las variables con nombres explícitos para el SDK moderno
+            # Forzamos la animación de sentado directamente en el personaje del jugador objetivo
+            await self.bot.highrise.send_emote(
+                emote_id="idle-loop-sitfloor", 
+                target_user_id=target_user.id
             )
 
         except Exception as e:
-            print(f"Error en comando dormir real: {e}")
-            await self.bot.highrise.send_whisper(user.id, "❌ No se pudo ejecutar la moderación. Verifica si el bot tiene rango de Diseñador en la sala.")
+            print(f"Error en comando dormir con nombres explícitos: {e}")
+            await self.bot.highrise.send_whisper(user.id, "❌ No pude forzar la animación en el usuario.")
