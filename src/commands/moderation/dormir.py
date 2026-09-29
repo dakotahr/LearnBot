@@ -1,58 +1,47 @@
 from highrise import User
-from highrise.models import Position
 
 class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "dormir"
-        self.description = "Manda a un usuario a dormir directo al suelo de la sala. Uso: /dormir @usuario"
-        self.permissions = ["moderation"] # Solo dueños o moderadores autorizados
+        self.description = "Sienta a la fuerza a un usuario en el suelo usando el sistema de moderación. Uso: /dormir @usuario"
+        self.permissions = ["moderation"] # Exclusivo para vos y tus moderadores
         self.cooldown = 2
 
     async def execute(self, user: User, args: list, message: str):
-        # 1. Validación de argumentos (Necesitamos saber a quién tirar al suelo)
+        # 1. Validación de argumentos
         if len(args) == 0:
             await self.bot.highrise.send_whisper(user.id, "⚠️ Uso correcto: /dormir @usuario\nEjemplo: /dormir @Pepe")
             return
 
-        # Limpiamos el arroba si lo pusieron en el chat
         target_username = args.replace("@", "").strip().lower()
 
         try:
-            # 2. El bot escanea la sala buscando al usuario objetivo
+            # 2. El bot busca al usuario en la sala para extraer su ID
             response = await self.bot.highrise.get_room_users()
             users_in_room = [content for content in response.content]
             
             target_user = None
-            target_position = None
-            
             for u, pos in users_in_room:
                 if u.username.lower() == target_username:
                     target_user = u
-                    target_position = pos
                     break
 
             if not target_user:
                 await self.bot.highrise.send_whisper(user.id, f"❌ El usuario '@{target_username}' no está en la sala.")
                 return
 
-            # 3. EL TRUCO MAGICO: Forzamos la teletransportación al ras del suelo (Y = 0.0)
-            await self.bot.highrise.chat(f"💤 ¡Zzz! @{user.username} mandó a dormir a @{target_user.username} al suelo. 🛏️")
+            # 3. Anuncio público divertido en el chat
+            await self.bot.highrise.chat(f"💤 ¡Zzz! @{user.username} mandó a dormir a @{target_user.username} al suelo de la sala. 🛏️")
             
-            # Teletransportamos al usuario manteniendo su X y su Z, pero bajando su Y a 0.0
-            await self.bot.highrise.teleport(
-                target_user.id,
-                Position(
-                    x=target_position.x,
-                    y=0.0,  # El nivel del suelo absoluto de la sala
-                    z=target_position.z,
-                    facing=target_position.facing
-                )
+            # 4. 🔥 EL PARCHE REAL: Usamos la función oficial de moderación para sentarlo en el piso
+            # Pasamos el ID del usuario, la acción 'sit' (sentar) y el tipo de anclaje de suelo ('floor')
+            await self.bot.highrise.moderate_room(
+                user_id=target_user.id,
+                action="sit",
+                anchor="floor"
             )
 
-            # 4. Le inyectamos el emote en bucle para que se quede sentado o acostado en el piso
-            await self.bot.highrise.send_emote("idle-loop-sitfloor", target_user.id)
-
         except Exception as e:
-            print(f"Error en comando dormir: {e}")
-            await self.bot.highrise.send_whisper(user.id, "❌ Hubo un error técnico al intentar mandar a dormir al usuario.")
+            print(f"Error en comando dormir real: {e}")
+            await self.bot.highrise.send_whisper(user.id, "❌ No se pudo ejecutar la moderación. Verifica si el bot tiene rango de Diseñador en la sala.")
