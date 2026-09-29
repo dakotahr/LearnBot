@@ -1,11 +1,10 @@
 from highrise import User
-from highrise.models import Position
 
 class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = "dormir"
-        self.description = "El bot se teletransporta y se acuesta a dormir al lado de un usuario. Uso: /dormir @usuario"
+        self.description = "Sanciona a un usuario mandándolo a dormir afuera (Expulsión/Kick). Uso: /dormir @usuario"
         self.permissions = ["moderation"] # Exclusivo para vos y tus moderadores
         self.cooldown = 3
 
@@ -17,42 +16,36 @@ class Command:
 
         target_username = args.replace("@", "").strip().lower()
 
+        # Evitamos que te expulses a vos mismo por error
+        if target_username == "iamdakota":
+            await self.bot.highrise.send_whisper(user.id, "❌ No podés mandarte a dormir afuera a vos mismo, crack.")
+            return
+
         try:
-            # 2. El bot busca al usuario objetivo en la sala para copiar sus coordenadas
+            # 2. El bot busca al usuario en la sala para extraer su ID único
             response = await self.bot.highrise.get_room_users()
             users_in_room = [content for content in response.content]
             
             target_user = None
-            target_position = None
-            
             for u, pos in users_in_room:
                 if u.username.lower() == target_username:
                     target_user = u
-                    target_position = pos
                     break
 
             if not target_user:
                 await self.bot.highrise.send_whisper(user.id, f"❌ El usuario '@{target_username}' no está en la sala.")
                 return
 
-            # 3. ¡TELETRANSPORTACIÓN!: El bot se clava al lado del usuario usando su misma X y Z
-            # Le sumamos un mini ajuste de 0.5 a la X para que quede paradito justo al lado y no encima
-            await self.bot.highrise.teleport(
-                self.bot.id,
-                Position(
-                    x=target_position.x + 0.5,
-                    y=target_position.y,
-                    z=target_position.z,
-                    facing=target_position.facing
-                )
+            # 3. Anuncio público en el chat de la sala
+            await self.bot.highrise.chat(f"🚪 💤 ¡A dormir afuera! @{user.username} mandó a dormir a @{target_user.username} fuera de la sala.")
+
+            # 4. 🔥 EL PODER DE MODERACIÓN REAL: Expulsamos al usuario de la sala
+            # Usamos la función nativa oficial para dar Kick instantáneo
+            await self.bot.highrise.moderate_room(
+                user_id=target_user.id,
+                action="kick"
             )
 
-            # Anuncio divertido en el chat público
-            await self.bot.highrise.chat(f"💤 Shhh... 🤫 @{user.username} mandó a beBot33 a dormir al lado de @{target_user.username}. ¡No hagan ruido! 🛏️")
-
-            # 4. El bot se acuesta en el suelo usando su propia animación en loop
-            await self.bot.highrise.send_emote("idle-loop-sitfloor")
-
         except Exception as e:
-            print(f"Error en comando dormir interactivo: {e}")
-            await self.bot.highrise.send_whisper(user.id, "❌ No pude mover al bot al lado del usuario.")
+            print(f"Error en comando dormir estilo kick: {e}")
+            await self.bot.highrise.send_whisper(user.id, "❌ No pude expulsar al usuario. Verifica si el bot tiene rango de Moderador de la sala.")
