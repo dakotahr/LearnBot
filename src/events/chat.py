@@ -7,28 +7,45 @@ async def on_chat(bot, user: User, message: str) -> None:
 
     msg_limpio = message.strip().lower()
 
-    # Si hay una trivia corriendo y escriben la letra justa...
+    # =========================================================================
+    # 📬 PARCHE CARTERO MSN: Entregar recados guardados en privado
+    # =========================================================================
+    if hasattr(bot, 'mensajes_msn') and user.id in bot.mensajes_msn:
+        recados = bot.mensajes_msn[user.id]
+        if recados: # Si hay cartas pendientes...
+            for nota in recados:
+                try:
+                    # El bot le susurra en secreto los mensajes guardados
+                    await bot.highrise.send_whisper(
+                        user.id, 
+                        f"✉️ [MSN Messenger] Tenés un mensaje dejado por @{nota['remitente']}: \"{nota['texto']}\""
+                    )
+                except Exception as e:
+                    print(f"Error al entregar susurro de cartero: {e}")
+            
+            # ¡Muy importante!: Borramos el buzón de este usuario para que no le repita los mensajes
+            del bot.mensajes_msn[user.id]
+
+    # =========================================================================
+    # 🧠 INTERCEPTOR DE TRIVIA
+    # =========================================================================
     if hasattr(bot, 'trivia_activa') and bot.trivia_activa and msg_limpio in ['a', 'b', 'c']:
         if msg_limpio == bot.respuesta_correcta:
-            # Guardamos los estados antes de apagarlos
             paga_oro = bot.trivia_paga_oro
             
             bot.trivia_activa = False  
             bot.respuesta_correcta = "" 
             bot.trivia_paga_oro = False 
             
-            # Anuncio de victoria básico
             await bot.highrise.chat(f"🎉 ¡Felicidades @{user.username}! Respondiste correctamente. 🧠✨")
             
-            # 🕺 ¡BAILE DE FESTEJO OBLIGATORIO!: Forzamos al ganador a celebrar
             try:
-                # Elegimos una animación divertida de festejo o saludo
                 festejos = ["emote-celebrate", "emote-wave"]
-                await bot.highrise.send_emote(festejos[0], user.id)
+                import random
+                await bot.highrise.send_emote(random.choice(festejos), user.id)
             except Exception as e:
                 print(f"No se pudo hacer bailar al ganador: {e}")
 
-            # 💰 ¡PREMIO DE CAJERO AUTOMÁTICO!: Si el dueño activó el modo oro, el bot le paga en el acto
             if paga_oro:
                 try:
                     await bot.highrise.chat(f"🎁 Guardando 1 de oro de la alcancía en el bolsillo de @{user.username}...")
@@ -38,5 +55,8 @@ async def on_chat(bot, user: User, message: str) -> None:
             
             return 
             
+    # =========================================================================
+    # ⚙️ PROCESADOR DE COMANDOS ORIGINAL
+    # =========================================================================
     if message.lstrip().startswith(config.prefix):
         await bot.command_handler.handle_command(user, message)
