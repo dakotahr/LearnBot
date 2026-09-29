@@ -1,16 +1,20 @@
-import random
+import json
+import asyncio
 from highrise import User
 
 class Command:
     def __init__(self, bot):
         self.bot = bot
-        self.name = "me"  # El comando será /me [número o palabra]
-        self.description = "Buscador inteligente e indexado de más de 100 emotes del juego por número o aproximación."
-        self.permissions = [] # Libre para todos los visitantes de tu sala
-        self.cooldown = 2
+        self.name = "me"  # El comando será /me
+        self.description = "Baila 100 emotes en bucle por número o aproximación. Usa '/me stop' para parar."
+        self.permissions = [] # Libre para toda la sala
+        self.cooldown = 1
 
-        # 🕺 CATÁLOGO INDEXADO DE 100 EMOTES POPULARES DEL SERVIDOR
-        # El bot los reconocerá por su número de orden (del 1 al 100) o por palabras cortas
+        # Diccionario en la RAM del bot para controlar quién está en bucle
+        if not hasattr(bot, 'usuarios_me_bucle'):
+            bot.usuarios_me_bucle = {}
+
+        # 🕺 CATÁLOGO INDEXADO DE 100 EMOTES DEL SERVIDOR
         self.lista_completa = [
             "dance-macarena", "dance-tiktok8", "dance-blackpink", "dance-tiktok2", "dance-pennywise",
             "dance-russian", "dance-shoppingcart", "dance-tiktok9", "dance-weird", "dance-tiktok10",
@@ -34,43 +38,58 @@ class Command:
             "dance-tiktok7", "dance-anime", "dance-kpop", "dance-jpop", "dance-disco"
         ]
 
+    async def reloj_bucle_me(self, user_id, emote_id):
+        """Reloj en segundo plano que repite el baile cada 9 segundos"""
+        try:
+            while user_id in self.bot.usuarios_me_bucle and self.bot.usuarios_me_bucle[user_id] == emote_id:
+                await self.bot.highrise.send_emote(emote_id, user_id)
+                await asyncio.sleep(9) # Duración estándar de la animación
+        except Exception as e:
+            print(f"Error en bucle /me para {user_id}: {e}")
+
     async def execute(self, user: User, args: list, message: str):
-        # 1. Si no escriben nada, el bot les da una pista e instrucciones
+        # 1. Comando especial para DETENER el bucle
+        if len(args) > 0 and args[0].lower() == 'stop':
+            if user.id in self.bot.usuarios_me_bucle:
+                del self.bot.usuarios_me_bucle[user.id]
+                await self.bot.highrise.send_whisper(user.id, "🛑 Tu bucle de baile se ha detenido.")
+            else:
+                await self.bot.highrise.send_whisper(user.id, "No tenías ningún bucle activo.")
+            return
+
+        # 2. Validación de argumentos vacíos
         if len(args) == 0:
             await self.bot.highrise.send_whisper(
                 user.id, 
-                f"💡 Uso de /me:\n🔢 Por número: /me 1 al {len(self.lista_completa)}\n🔤 Por aproximación: /me maca o /me tik"
+                f"Uso: /me [número 1 al {len(self.lista_completa)}] o /me [palabra] o /me stop"
             )
             return
 
-        # Unimos lo que escribió el usuario (ejemplo: 'maca' o '19')
         busqueda = " ".join(args).strip().lower()
         emote_encontrado = None
 
-        # 2. LÓGICA POR NÚMERO DIRECTO (Del 1 al 100)
+        # 3. Buscador por número
         if busqueda.isdigit():
-            numero = int(busqueda) - 1  # Restamos 1 porque en programación se cuenta desde 0
+            numero = int(busqueda) - 1
             if 0 <= numero < len(self.lista_completa):
                 emote_encontrado = self.lista_completa[numero]
             else:
-                await self.bot.highrise.send_whisper(user.id, f"⚠️ Elige un número válido entre 1 y {len(self.lista_completa)}.")
+                await self.bot.highrise.send_whisper(user.id, f"Elige un número entre 1 y {len(self.lista_completa)}.")
                 return
-
-        # 3. LÓGICA POR APROXIMACIÓN DE PALABRA
+        # 4. Buscador por palabra aproximada
         else:
-            # El bot busca de forma predictiva si la palabra corta está metida adentro de algún emote
             for emote in self.lista_completa:
                 if busqueda in emote.lower():
                     emote_encontrado = emote
-                    break  # Frena al encontrar la primera coincidencia válida
+                    break
 
-        # 4. ENVIAR LA ORDEN DE BAILE AL SERVIDOR
+        # 5. Activación del Bucle en Segundo Plano
         if emote_encontrado:
-            try:
-                # Hace bailar al usuario que ejecutó el comando /me
-                await self.bot.highrise.send_emote(emote_encontrado, user.id)
-            except Exception as e:
-                print(f"Error en /me con {emote_encontrado}: {e}")
-                await self.bot.highrise.send_whisper(user.id, "❌ No se pudo ejecutar el baile. ¿Lo tienes en tu inventario?")
+            # Guardamos al usuario y el baile elegido en la RAM del bot
+            self.bot.usuarios_me_bucle[user.id] = emote_encontrado
+            await self.bot.highrise.send_whisper(user.id, f"🕺 Bucle iniciado por defecto. Usa '/me stop' para frenar.")
+            
+            # Lanzamos la tarea repetitiva
+            asyncio.create_task(self.reloj_bucle_me(user.id, emote_encontrado))
         else:
-            await self.bot.highrise.send_whisper(user.id, f"🔍 No encontré ningún emote que coincida con '{busqueda}'. ¡Prueba con otra palabra!")
+            await self.bot.highrise.send_whisper(user.id, f"🔍 No encontré ningún emote con '{busqueda}'.")
