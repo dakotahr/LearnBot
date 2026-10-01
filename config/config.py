@@ -12,10 +12,10 @@ class config:
     
     # Coordenadas exactas donde aparecerá el bot al entrar a la sala
     coordinates = {
-        'x': 0.50707095861435,
-        'y': 0.10000000149012,
-        'z': 4.492928981781,
-        'facing': 'FrontRight'
+        'x': 2.25,
+        'y': 0.25,
+        'z': 4.75,
+        'facing': 'FrontLeft'
     }
 
 
