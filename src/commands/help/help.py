@@ -15,9 +15,9 @@ class Command:
             user.id,
             "📚 COMANDOS DISPONIBLES:\n"
             "/help - Muestra esta ayuda\n"
-            "/info - Alias de help\n"
-            "/hmm - Alias de help\n"
-            "/outfit - Cambia el look del bot\n"
-            "/inventario - Muestra el inventario\n"
-            "/cloname - Clona el look de un usuario"
+            "/dance - + ID de emote\n"
+            "/dejar - + user serv. mensajeria\n"
+            "/loop - + emote por numero\n"
+            "/me - + emote \n"
+            "/test - comando de chequeo del bot"
         )
