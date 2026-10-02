@@ -5,48 +5,14 @@ class Command:
     def __init__(self, bot):
         self.bot = bot
         self.name = 'help'
-        self.description = "Muestra los comandos disponibles"
-        self.aliases = ['info', 'hmm']
+        self.description = "Your command description"
+        self.aliases = ['info', 'hmm']  # you can add as much aliases as u want
+        # its optional to add permissions, i dont have the permission example in config.permissions.json
         self.permissions = []
         self.cooldown = 5
 
     async def execute(self, user: User, args: list, message: str):
-        # ============================================================
-        # EDITA SOLAMENTE ESTA LISTA SI QUIERES CAMBIAR LOS COMANDOS
-        # QUE APARECEN EN /help.
-        #
-        # Para agregar un comando: "nombre",
-        # Para quitarlo: elimina su línea.
-        # ============================================================
-        comandos_ayuda = [
-            "dance",
-            "dejar",
-            "loop",
-            "me",
-            "test",
-            "help",
-            "wallet",
-        ]
-
-        # ============================================================
-        # NO NECESITAS EDITAR NADA DE ABAJO
-        # ============================================================
-        await self.bot.highrise.send_whisper(
-            user.id,
-            "📚 COMANDOS DISPONIBLES:"
-        )
-
-        for nombre in comandos_ayuda:
-            comando = self.bot.command_handler.commands.get(nombre)
-
-            if comando:
-                descripcion = getattr(
-                    comando,
-                    "description",
-                    "Sin descripción"
-                )
-
-                await self.bot.highrise.send_whisper(
-                    user.id,
-                    f"/{nombre} - {descripcion}"
-                )
+        # now notice that we used self.bot.highrise and not self.highrise, keep this in mind
+        await self.bot.highrise.chat('No hay ayuda')
+        # now you can use this template for all commands just copy and paste it
+        # i hope this helped !
