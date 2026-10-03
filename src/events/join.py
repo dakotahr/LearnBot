@@ -1,7 +1,8 @@
 import random
-import asyncio  # IMPORTANTE: Traemos la librería de tiempo
+import asyncio
 from highrise.models import User
 from config.config import loggers
+
 
 async def on_join(bot, user: User, position) -> None:
     if loggers.joins:
@@ -10,18 +11,16 @@ async def on_join(bot, user: User, position) -> None:
     if user.username == "beBot33":
         return
 
-    # ⏱️ ¡EL SALVAVIDAS!: Hacemos que el bot espere 2 segundos quietito
-    # Esto le da tiempo al juego de cargar al usuario y evita que el bot se caiga
+    # Esperamos 2 segundos para que el usuario termine de cargar.
     await asyncio.sleep(2)
 
-    # 📝 BANCO DE SALUDOS
+    # SALUDOS DE BIENVENIDA
     saludos_base = [
-        f"¡Hola {user.username}! Bienvenido/a a la sala. Pásala genial. ❤️",
+        f"¡Hola {user.username}! Bienvenido/a a la sala. ❤️",
         f"✨ ¡Qué alegría verte por acá {user.username}! Ponete cómodo/a. ✨",
         f"👋 ¡Buenas buenas {user.username}! Bienvenido/a a nuestro rincón."
     ]
 
-    # 🎭 BANCO DE CHISTES
     remates_divertidos = [
         "¡Qué elegancia la de Francia! 🇫🇷",
         "Me encantan tus vibras hoy. 😎",
@@ -34,7 +33,14 @@ async def on_join(bot, user: User, position) -> None:
     if random.random() < 0.5:
         saludo_final += f" {random.choice(remates_divertidos)}"
 
-    # Envío del susurro seguro después de la espera
+    # Si automatico.py está cargado, sus saludos pueden apagarse
+    # independientemente de las frases y anuncios.
+    automatico = bot.command_handler.commands.get("automatico")
+
+    if automatico is not None:
+        if not getattr(automatico, "saludos_activos", True):
+            return
+
     try:
         await bot.highrise.send_whisper(user.id, saludo_final)
     except Exception as e:
